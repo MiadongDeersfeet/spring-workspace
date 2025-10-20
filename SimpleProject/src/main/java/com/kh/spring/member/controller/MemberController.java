@@ -1,0 +1,204 @@
+package com.kh.spring.member.controller;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.kh.spring.member.model.dto.MemberDTO;
+import com.kh.spring.member.model.service.MemberService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+public class MemberController {
+	/*
+	@RequestMapping("login")
+	public void login(Member member) {
+		
+		// 1. 값뽑기
+		// 2. 데이터 가공
+		System.out.println(member);
+	
+	}
+	*/
+	
+	/*
+	@RequestMapping("login")
+	public String login(HttpServletRequest request) {
+		String userId = request.getParameter("userId");
+		String userPwd = request.getParameter("userPwd");
+		
+		System.out.printf("id : %s , pwd : %s", userId, userPwd);
+		
+		return "main";
+	}
+	*/
+	
+	/*
+	@RequestMapping("login")
+	public String login(@RequestParam(value="userId", defaultValue="whatisthis?") String id, @RequestParam(value="userPwd") String pwd) {
+		// 메서드에 매개변수 두 개를 만들어 놓는다. -- 값을 두 개 받아야하니까~!
+		
+		System.out.printf("이렇게 하면 될까요?? id : %s, pwd : %s", id, pwd);
+		
+		return "main";
+	}
+	*/
+	
+	/*
+	@RequestMapping("login")
+	public String login(String userId, String userPwd) {
+		
+		System.out.println("ID : " + userId + ", PWD : " + userPwd);
+		
+		return "main";	
+	}
+	*/
+	
+	/*
+	 * HandlerAdapter의 판단 방법 :
+	 * 
+	 *  1. 매개변수 자리에 기본타입(int, boolean, String, Date...)이 있거나
+	 *  	RequestParam 애노테이션이 존재하는 경우 == RequestParam으로 인식
+	 *  
+	 *  2. 매개변수 자리에 사용자 정의 클래스(MemberDTO, Board, Reply...)이 있거나
+	 *     ModelAttribute애토네이션이 존재하는 경우 == 커맨드 객체 방식으로 인식
+	 *     
+	 * 커맨드 객체 방식
+	 * 
+	 * 스프링에서 해당 객체를 기본생성자를 이용해서 생성한 후 내부적으로 Setter 메서드를 찾아서
+	 * 요청 시 전달값을 해당 필드에 대입해주는 방식 == 커맨드 객체 방식
+	 * 
+	 * 1. 매개변수 자료형에 반드시 기본생성자가 존재할 것
+	 * 2. 전달되는 키 값과 객체의 필드명이 동일할 것
+	 * 3. Setter 메서드가 반드시 존재할 것
+	 * 
+	 */
+	//@Autowired
+	private final MemberService memberService; // = new MemberService();
+	
+	/*
+	@Autowired
+	public void setMemberService(MemberServcie memberService) {
+		this.memberService = memberService;
+	} 둘다 안씁니다. => 권장하는 방법이 따로 있어요.
+	*/
+	
+	@Autowired /* ☆ 권장 방법 ★ */
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	/*
+	@RequestMapping("login")
+	public String login(MemberDTO member, //HttpServletRequest request,
+						HttpSession session, Model model) {
+		//System.out.println("로그인 시 입력한 정보 : " + member);
+		log.info("Member객체 필드값 확인 ~ {}", member);
+		MemberDTO loginMember = memberService.login(member);
+		
+		if(loginMember != null) {
+			log.info("로그인 성공");
+		} else {
+			log.info("실패");
+		}
+		
+		if(loginMember != null) { //로그인에 성공
+			// sessionScope에 로그인 된 사용자의 정보를 담아줌
+			// HttpSession session = request.getSession();
+			session.setAttribute("loginMember", loginMember);
+			// 포워딩 방식 보다는 -> sendRedirect
+			// localhost/spring
+			// 원래는 redirect 하려면 response 사용했는데 이제는 그럴 필요가 없어요~~~
+			
+			return "redirect:/"; // (문자열은 뷰에 들어감)
+		} else { // 실패했을 때
+			
+			// error_page -> 포워딩
+			// requestScope에 msg라는 키값으로 로그인 실패입니다 ~~ 담아서 포워딩 // 모델이 들어가야함. (모델 앤드 뷰)
+			// Spring에서는 Model타입을 이용해서 RequestScope에 값을 담음
+			model.addAttribute("msg", "로그인 실패!");
+			
+			// Forwarding (디스패처 서블릿에서 뷰 리졸버로 간다구요~~~)
+			// /WEB-INF/views/
+			// .jsp
+			
+			// /WEB-INF/views/include/error_page.jsp
+			
+			return "include/error_page";
+			
+		}
+		
+		//return "main";
+	}
+	*/
+	
+	// 두 번째 방법 : 반환타입 ModelAndView타입으로 반환
+	
+	@PostMapping("/login") // GetMapping 만약에 겟으로 오면~!
+	public ModelAndView login(MemberDTO member, HttpSession session, ModelAndView mv) {
+		
+		MemberDTO loginMember = memberService.login(member);
+		
+		if(loginMember != null) {
+			session.setAttribute("loginMember", loginMember);
+			mv.setViewName("redirect:/");
+		} else {
+			mv.addObject("msg", "로그인 실패!").setViewName("include/error_page");
+		}
+		
+		return mv;
+	}
+	
+	// CRUD
+	// INSERT --> POST ------> /member
+	// SELECT --> GET -------> 
+	
+	// UPDATE
+	// DELETE
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
