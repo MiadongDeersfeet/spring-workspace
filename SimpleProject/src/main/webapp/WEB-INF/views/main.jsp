@@ -8,11 +8,11 @@
 </head>
 <body>
 
-<jsp:include page="include/header.jsp" />
+<jsp:include page="/WEB-INF/views/include/header.jsp" />
 
 <div style="width: 1200px; height: 600px;"> </div>
 
-<jsp:include page="include/footer.jsp" />
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 
 </body>
 </html>
