@@ -1,5 +1,8 @@
 package com.kh.spring.member.controller;
 
+import java.io.UnsupportedEncodingException;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,7 +180,20 @@ public class MemberController {
 		return "member/signup";
 	}
 	
-	
+	@PostMapping("signup")
+	public String signup(MemberDTO member, HttpServletRequest request) {
+		// 아이디, 비밀번호, 이름, 이메일
+		/*
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		*/
+		log.info("{}", member);
+		memberService.signUp(member);
+		return "redirect:join";
+	}
 	
 	
 	

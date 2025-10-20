@@ -4,6 +4,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.spring.exception.TooLargeValueException;
 import com.kh.spring.member.model.dao.MemberRepository;
 import com.kh.spring.member.model.dto.MemberDTO;
 
@@ -28,6 +29,25 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void signUp(MemberDTO member) {
+		// 꼼꼼하게 검증 (반환타입이 없음 이번에는)
+		// 유효값 검증
+		if(member == null) {
+			return;
+		}
+		
+		if(member.getUserId().length() > 20) {
+			throw new TooLargeValueException("아이디 값이 너무 길어요.");
+		}
+		
+		if(member.getUserId() == null || 
+		   member.getUserId().trim().isEmpty() ||
+		   member.getUserPwd() == null ||
+		   member.getUserPwd().trim().isEmpty()) {
+			return;
+		}
+		
+		
+	
 	}
 
 	@Override
