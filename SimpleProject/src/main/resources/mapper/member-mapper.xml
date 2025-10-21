@@ -15,9 +15,24 @@
   		       MEMBER
   		 WHERE
   		       USER_ID = #{userId}
+  		       <!--  
   		   AND
-  		   	   USER_PWD = #{userPwd}          	 	  
+  		   	   USER_PWD = #{userPwd}
+  		   	   -->          	 	  
   	</select>
   
+  	<insert id="signup" parameterType="com.kh.spring.member.model.dto.MemberDTO">
+  		INSERT
+  		  INTO
+  		       MEMBER
+  		VALUES
+  		       (
+  		       #{userId}
+  		     , #{userPwd}
+  		     , #{userName}
+  		     , #{email}
+  		     , SYSDATE  
+  		       )	       
+  	</insert>
  
   </mapper>

@@ -1,7 +1,5 @@
 package com.kh.spring.member.controller;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.spring.member.model.dto.MemberDTO;
@@ -70,7 +69,7 @@ public class MemberController {
 	 *  	RequestParam 애노테이션이 존재하는 경우 == RequestParam으로 인식
 	 *  
 	 *  2. 매개변수 자리에 사용자 정의 클래스(MemberDTO, Board, Reply...)이 있거나
-	 *     ModelAttribute애토네이션이 존재하는 경우 == 커맨드 객체 방식으로 인식
+	 *     ModelAttribute애노테이션이 존재하는 경우 == 커맨드 객체 방식으로 인식
 	 *     
 	 * 커맨드 객체 방식
 	 * 
@@ -152,7 +151,7 @@ public class MemberController {
 			session.setAttribute("loginMember", loginMember);
 			mv.setViewName("redirect:/");
 		} else {
-			mv.addObject("msg", "로그인 실패!").setViewName("include/error_page");
+			mv.addObject("msg", "아이디 또는 비밀번호를 확인해주세요").setViewName("include/error_page");
 		}
 		
 		return mv;
@@ -191,44 +190,60 @@ public class MemberController {
 		}
 		*/
 		log.info("{}", member);
-		memberService.signUp(member);
-		return "redirect:join";
+		memberService.signup(member);
+		return "main";
 	}
 	
+	@GetMapping("mypage")
+	public String myPage() {
+		return "member/my_page";
+	}
 	
+	@PostMapping("edit")
+	public String edit(MemberDTO member, HttpSession session) {
+		/*
+		 * 1_1) 404 발생 == 매핑값 오타 (form action="" 또는 @PostMapping(""))
+		 * org.springframework.web.servlet.PageNotFound
+		 * 
+		 * 1_2) 405 발생 == (form method="get") 요청전송방식을 GET/POST를 앞단<->뒷단 서로 안맞을 때
+		 * Request method "GET" not supported
+		 * 
+		 * 1_3) 필드에 값이 잘 들어왔나?? - Key값 확인
+		 */
+		log.info("값 찍어보기 : {}", member);
+		
+		/*
+		 * 2. SQL문
+		 * UPDATE => MEMBER -> 특정 한 명의 정보를 수정하는 것이기에 누구에게 WHERE 조건절을 달아야하는지 생각해야한다. 보편적으로 PK를 떠올려야한다.
+		 * ID PWD NAME EMAIL ENROLLDATE => 지금은 ID, NAME, EMAIL 만 값이 넘어오는데 NAME, EMAIL만 수정 가능함.
+		 * 
+		 * 2_1) 매개변수 MemberDTO타입의 memberId필드값을 조건으로 써야겠구나~!
+		 * UPDATE MEMBER SET USER_NAME = 입력한 값, EMAIL = 입력한 값
+		 *  WHERE USER_ID = 넘어온 아이디
+		 */
+		
+		/*
+		 * Best Practice
+		 * 
+		 * 실무 권장
+		 * 
+		 * 컨트롤러에서 세션관리를 담당
+		 * 서비스에는 순수 비즈니스 로직만 구현
+		 * 서비스에서 HttpSession이 필요하다면 인자로 전달
+		 */
+		
+		memberService.update(member, session);
+		
+		return "redirect:mypage";
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@PostMapping("delete")
+	public String delete(@RequestParam(value="userPwd") String userPwd, HttpSession session) {
+		
+		memberService.delete(userPwd, session);
+		session.removeAttribute("loginMember");
+		return "redirect:/";
+	}
 	
 	
 }

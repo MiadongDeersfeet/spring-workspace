@@ -1,5 +1,7 @@
 package com.kh.spring.member.model.service;
 
+import javax.servlet.http.HttpSession;
+
 import com.kh.spring.member.model.dto.MemberDTO;
 
 public interface MemberService {
@@ -13,13 +15,13 @@ public interface MemberService {
 	// MyBatis : 1. 정수값을 반환함
 	//			 2. 아무 값도 반환하지 않음(void) == 예외처리를 빡빡하게 하겠음
 	// Hibernate : 가입된 회원의 정보를 반환해줌 / 실패시 null
-	void signUp(MemberDTO member);
+	void signup(MemberDTO member);
 	
 	// 정보수정
-	void update(MemberDTO member);
+	void update(MemberDTO member, HttpSession session);
 	
 	// 탈퇴
-	void delete(MemberDTO member);
+	void delete(String userPwd, HttpSession session);
 	
 	
 }
