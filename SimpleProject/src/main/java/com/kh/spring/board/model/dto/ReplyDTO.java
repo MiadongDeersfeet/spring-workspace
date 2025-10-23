@@ -1,4 +1,4 @@
-package com.kh.spring.member.model.dto;
+package com.kh.spring.board.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

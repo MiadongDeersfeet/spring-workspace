@@ -2,8 +2,6 @@ package com.kh.spring.board.model.dto;
 
 import java.util.List;
 
-import com.kh.spring.member.model.dto.ReplyDTO;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

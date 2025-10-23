@@ -48,7 +48,7 @@ public class BoardController {
 	public void b() {};
 	*/
 	
-	@GetMapping("boards")
+	@GetMapping
 	public String findAll(@RequestParam(name="page", defaultValue="1") Long page, Model model) {
 		log.info("앞에서 넘어온 페이지 값 : {}", page);
 		// 페이징처리
@@ -60,12 +60,12 @@ public class BoardController {
 		return "board/list";
 	}
 	
-	@GetMapping("boards/form")
+	@GetMapping("/form")
 	public String toForm() {
 		return "board/form";
 	}
 	
-	@PostMapping("boards")
+	@PostMapping
 	public String save(BoardDTO board, MultipartFile upfile, HttpSession session) {
 		boardService.save(board, upfile, session);
 		log.info("게시글 정보 : {}, 파일정보 : {}", board, upfile);
@@ -83,7 +83,7 @@ public class BoardController {
 		return "redirect:boards";
 	}
 	
-	@GetMapping("/{id}")
+	@GetMapping("{id}")
 	public String toDetail(@PathVariable(name="id") Long boardNo, Model model) {
 		
 		log.info("게시글번호 : {}", boardNo);
