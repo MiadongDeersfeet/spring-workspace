@@ -86,9 +86,9 @@
         <div id="header_2">
             <ul>
                 <li><a href="/spring">HOME</a></li>
-                <li><a href="">공지사항</a></li>
+                <li><a href="/spring/beef">안심식당</a></li>
                 <li><a href="/spring/boards">자유게시판</a></li>
-                <li><a href="">사진게시판</a></li>
+                <li><a href="/spring/busan">부산맛집탐방</a></li>
             </ul>
         </div>
     </div>
